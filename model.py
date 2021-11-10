@@ -58,10 +58,49 @@ def _preprocess_data(data):
     # ---------------------------------------------------------------
 
     # ----------- Replace this code with your own preprocessing steps --------
-    predict_vector = feature_vector_df[['Madrid_wind_speed','Bilbao_rain_1h','Valencia_wind_speed']]
+    
     # ------------------------------------------------------------------------
 
-    return predict_vector
+    feature_vector_df['time'] = pd.to_datetime(feature_vector_df['time']) #Change from string to datetime
+
+#splitting the time variable into day,month,year and hr
+    feature_vector_df['Time_day']=feature_vector_df['time'].dt.day
+
+    feature_vector_df['Time_month']=feature_vector_df['time'].dt.month
+
+    feature_vector_df['Time_hour']=feature_vector_df['time'].dt.hour
+
+    feature_vector_df['Time_year']=feature_vector_df['time'].dt.year
+
+    df_time=feature_vector_df.filter(regex='Time', axis=1)
+
+
+    target_variable=feature_vector_df['load_shortfall_3h']
+    df_time = pd.concat([df_time,target_variable], axis = 1)
+
+    feature_vector_df["sp"]=feature_vector_df["Seville_pressure"].str.replace("sp", "")
+    feature_vector_df['sp'] = pd.to_numeric(feature_vector_df['sp'])
+
+    #drop old column and rename new column
+    feature_vector_df.drop(["Seville_pressure"],axis=1,inplace=True)
+    #rename new column and view new table
+    feature_vector_df.rename({'sp': 'Seville_pressure'}, axis=1, inplace=True)
+
+    #converting Valencia_wind_deg to Vwd
+    #removing the sp in the seville pressure column
+    feature_vector_df["Vwd"]=feature_vector_df["Valencia_wind_deg"].str.replace("level_", "")
+    feature_vector_df['Vwd'] = pd.to_numeric(feature_vector_df['Vwd'])
+
+    #drop old column and rename new column
+    feature_vector_df.drop(["Valencia_wind_deg"],axis=1,inplace=True)
+
+    #rename new column and view new table
+    feature_vector_df.rename({'Vwd': 'Valencia_wind_deg'}, axis=1, inplace=True)
+    #Dropping columns
+    feature_vector_df = feature_vector_df.drop(['time', 'Barcelona_temp_min','Barcelona_temp_max','Bilbao_temp_max','Madrid_temp_min','Madrid_temp_max','Seville_temp_min','Valencia_temp_min
+
+], axis = 1)
+
 
 def load_model(path_to_model:str):
     """Adapter function to load our pretrained model into memory.
