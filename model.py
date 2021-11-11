@@ -97,9 +97,9 @@ def _preprocess_data(data):
     #rename new column and view new table
     feature_vector_df.rename({'Vwd': 'Valencia_wind_deg'}, axis=1, inplace=True)
     #Dropping columns
-    feature_vector_df = feature_vector_df.drop(['time', 'Barcelona_temp_min','Barcelona_temp_max','Bilbao_temp_max','Madrid_temp_min','Madrid_temp_max','Seville_temp_min','Valencia_temp_min
+    feature_vector_df = feature_vector_df.drop(['time', 'Barcelona_temp_min','Barcelona_temp_max','Bilbao_temp_max','Madrid_temp_min','Madrid_temp_max','Seville_temp_min','Valencia_temp_min'], axis = 1)
+    return feature_vector_df
 
-], axis = 1)
 
 
 def load_model(path_to_model:str):
